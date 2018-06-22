@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Prototype</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
+
+  <script src="pubmed-search.js"></script>
+
+  <script>
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {
+      scrollFunction()
+    };
+
+    function scrollFunction() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("myBtn").style.display = "block";
+      } else {
+        document.getElementById("myBtn").style.display = "none";
+      }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+  </script>
+
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+
+    #myBtn {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Fixed/sticky position */
+      bottom: 20px;
+      /* Place the button at the bottom of the page */
+      left: 30px;
+      /* Place the button 30px from the right */
+      z-index: 99;
+      /* Make sure it does not overlap */
+      border: none;
+      /* Remove borders */
+      outline: none;
+      /* Remove outline */
+      background-color: #337ab7;
+      /* Set a background color */
+      color: white;
+      /* Text color */
+      cursor: pointer;
+      /* Add a mouse pointer on hover */
+      padding: 15px;
+      /* Some padding */
+      border-radius: 10px;
+      /* Rounded corners */
+      font-size: 18px;
+      /* Increase font size */
+    }
+
+    #myBtn:hover {
+      background-color: #555;
+      /* Add a dark-grey background on hover */
+    }
+
+    .row.content {
+      height: 1500px
+    }
+
+    /* Set gray background color and 100% height */
+
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* On small screens, set height to 'auto' for sidenav and grid */
+
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {
+        height: auto;
+      }
+    }
+
+    #side {
+      padding-right: 0px;
+      padding-left: 0px
+    }
+
+    #panel-title {
+      border-radius: 0px;
+    }
+
+    #panel-main {
+      border: 0px;
+      border-radius: 0px;
+      background-color: #f1f1f1;
+      box-shadow: none;
+    }
+
+    #progr {
+      padding-left: 10px;
+      padding-right: 10;
+      /* display: none; */
+    }
+
+    #progr-msg {
+      padding-left: 10px;
+      padding-right: 10;
+      display: none;
+    }
+
+    #msgbox {
+      padding-left: 10px;
+      padding-right: 10;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 45px;
+      height: 17px;
+      border-style: solid black 1px;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ca2222;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 17px;
+      width: 17px;
+      left: 0px;
+      bottom: 0px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border: solid gray 1px;
+    }
+
+    input:checked+.slider {
+      background-color: #2ab934;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(28px);
+      -ms-transform: translateX(28px);
+      transform: translateX(28px);
+    }
+
+    /*------ ADDED CSS ---------*/
+
+    .on {
+      display: none;
+    }
+
+    .on,
+    .off {
+      color: white;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      font-size: 10px;
+      font-family: Verdana, sans-serif;
+    }
+
+    .on {
+      left: 32%
+    }
+
+    .off {
+      left: 65%
+    }
+
+    input:checked+.slider .on {
+      display: block;
+    }
+
+    input:checked+.slider .off {
+      display: none;
+    }
+
+    /*--------- END --------*/
+
+    /* Rounded sliders */
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    #progr,
+    #msgbox {
+      display: none
+    }
+
+    #label-msg {
+      position: absolute;
+      margin-left: 10px;
+    }
+
+    #result-nav>* {
+      display: none;
+    }
+
+    body {
+      position: relative;
+    }
+
+    #section1 {
+      padding-top: 50px;
+      clear: both;
+      color: black;
+      background-color: white;
+    }
+
+    #section2 {
+      display: none;
+      padding-top: 50px;
+      color: black;
+      background-color: white;
+      /* color: white; */
+      /* background-color: gray; */
+      clear: both;
+    }
+
+    #section3 {
+      display: none;
+      padding-top: 50px;
+      height: 500px;
+      color: black;
+      background-color: white;
+    }
+
+    #section41 {
+      display: none;
+      padding-top: 50px;
+      height: 500px;
+      color: white;
+      background-color: gray;
+    }
+
+    #section42 {
+      display: none;
+      padding-top: 50px;
+      height: 500px;
+      color: white;
+      background-color: gray;
+    }
+
+    .prototype-ui {
+      display: none
+    }
+
+    #table-maps {
+      display: none;
+    }
+
+
+  </style>
+
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+      </button>
+        <a class="navbar-brand" href="#">Prototype</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul id="result-nav" class="nav navbar-nav">
+          <li id="show-term-maps-btn"><a href="#section1">MeSH - ICD10 Mappings</a></li>
+
+          <li class="dropdown" id="show-pmid-per-inst"><a class="dropdown-toggle" data-toggle="dropdown" href="#">PMIDs per Institution <span class="caret"></span></a></a>
+            <ul class="dropdown-menu" id="dd-pmids">
+            </ul>
+          </li>
+          <li><a href="#">Section 3</a></li>
+          <li><a href="#">Section 4</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="file-uploader" style="margin-top:50px">
+    <h1>Upload mesh-icd10 mapping file</h1>
+    <p>Please, select file 'all_maps.csv' that is located in the 'data' folder.</p>
+    <input type="file" id="file" name="file" check />
+    <output id="list"></output>
+  </div>
+  <div class="container-fluid prototype-ui" style="margin-top:50px">
+    <div class="row content">
+      <div class="col-sm-3 sidenav" id="side">
+        <div class="panel panel-primary" id="panel-main">
+          <div class="panel-heading" id="panel-title">Search Options</div>
+          <div class="panel-body">
+            <form action="">
+              <div class="form-group">
+                <h2>Hospital Institutions</h2>
+                <label>Choose Institutions:</label>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='("academic medical center"[ad] or "academic medical centre"[ad] or AMC[ad]) and (amsterdam[ad] or netherlands[ad])'>Academic Medical Center (AMC)</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='("Antonius"[ad] and nieuwegein[ad])'>Antonius Nieuwegein</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='(("Erasmus Medical Center"[ad]) OR (Erasmus[ad] and Rotterdam[ad] and ("medical center"[ad] or "medical centre"[ad] or mc[ad]))) OR erasmusmc[ad]'>Erasmus Medical Center</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='(("UMC Groningen"[ad] or (Groningen[ad] and ("university medical center"[ad] or "university medical centre"[ad] or mc[ad])))) OR (groningen[ad] and "academic hospital"[ad])'>Groningen</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='Leiden[ad] and ("university medical center"[ad] or "university medical centre"[ad] or "academic hospital"[ad] or mc[ad])'>Leiden</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='"UMC Maastricht"[ad] or "Maastricht UMC"[ad] or (Maastricht[ad] and ("university medical center"[ad] or "university medical centre"[ad] or mc[ad])))) OR "academic hospital"[ad]))'>Maastricht UMC</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='((radboud[ad] or Nijmegen[ad] and ("university medical center"[ad] or "university medical centre"[ad] or "academic hospital"[ad] or mc[ad])) or radboudumc[ad] or radboudumcn[ad])'>Radboud University Nijmegen</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='"Utrecht mc"[ad] or "UMC Utrecht"[ad] or (Utrecht[ad] and ("university medical center"[ad] or "university medical centre"[ad] or "academic hospital"[ad] or mc[ad]))'>Utrecht Medical Center</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value='(((VUMC[ad] or (VU[ad] and (Amsterdam[ad] or Netherlands[ad] and ("university medical center"[ad] or "university medical centre"[ad] or mc[ad] or "academic hospital")))) OR ("VU medical center"[ad] or "VU medical centre"[ad])'>Vrije Universiteit MC</label>
+                </div>
+                <!-- <div class="checkbox">
+                  <label><input type="checkbox" name='institution' value="VU[ad] and Amsterdam[ad] and 'university medical centre'[ad] or 'university medical center'[ad]">VU Medical Center</label>
+                </div> -->
+              </div>
+              <div class="form-group">
+                <h2>MESH Categories</h2>
+                <label>Filter by MESH categories:</label>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='meshcat' value='"Diseases Category"[Mesh]' checked>Diseases</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='meshcat' value='"Health Care Category"[Mesh]' checked>Health Care</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name='meshcat' value='"Psychiatry and Psychology Category"[Mesh]' checked>Psychiatry and Psychology</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <h2>Publication Date Range</h2>
+                <label>Choose a date-range, or specify a specific date in start date:</label>
+                <div class="input-group input-daterange" data-provide="datepicker">
+                  <span class="input-group-addon">From</span>
+                  <input type="text" name="start" class="form-control" value="" placeholder="yyyy/mm/dd">
+                  <span class="input-group-addon">to</span>
+                  <input type="text" name="finish" class="form-control" value="" placeholder="yyyy/mm/dd">
+
+                </div>
+              </div>
+              <!-- <div class="form-group">
+                <div class="checkbox">
+                  <label><input type="checkbox" name='first-author' value="">Filter by first author</label>
+                </div>
+              </div> -->
+              <button type='submit' class="btn btn-primary btn-block" id="submit-button">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="row" id="progr">
+
+          <h4><small>PROGRESS</small></h4>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+              0%
+            </div>
+          </div>
+        </div>
+        <div class="row" id="msgbox">
+          <label class="switch"><input type="checkbox" id="togBtn"><div class="slider round"><!--ADDED HTML --><span class="on">ON</span><span class="off">OFF</span><!--END--></div></label>
+
+          <span id='label-msg'>Show progress messages</span>
+        </div>
+        <div class="row" id="progr-msg">
+          <ul class="list-group" id="msg-log">
+          </ul>
+        </div>
+        <hr>
+        <div id="section1" class="container-fluid">
+          <h1>Current MeSH and ICD10 Mappings</h1>
+          <p>The following table shows the mappings retrieved by various methods:</p>
+          <table id="table-maps" class="table table-striped table-responsive table-bordered" style="width:100%">
+            <thead class="thead-dark">
+              <tr>
+                <th>MeSH Code</th>
+                <th>MeSH Name</th>
+                <th>ICD10 Code</th>
+                <th>ICD10 Name</th>
+              </tr>
+            </thead>
+            <tbody id="table-maps-body">
+
+            </tbody>
+          </table>
+        </div>
+        <div id="section2" class="container-fluid">
+          <h1>PMIDs per Institution</h1>
+        </div>
+        <div id="section3" class="container-fluid">
+          <h1>Section 3</h1>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+        </div>
+        <div id="section41" class="container-fluid">
+          <h1>Section 4 Submenu 1</h1>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+        </div>
+        <div id="section42" class="container-fluid">
+          <h1>Section 4 Submenu 2</h1>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+          <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+        </div>
+      </div>
+    </div>
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+  </div>
+  <footer class="container-fluid prototype-ui">
+    <p>Footer Text</p>
+  </footer>
+</body>
+
+</html>
