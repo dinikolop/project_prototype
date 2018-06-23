@@ -250,7 +250,7 @@ function createPMIDtable(institution, data, i) {
     '</tr></tfoot>' +
     '<tbody id="' + secTableBody + '"></tbody>' +
     '</table>' +
-    ' </div>'
+    ' </div><hr>'
   $('#section2').append(toAppend);
 
 
