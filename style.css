@@ -1,0 +1,437 @@
+/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+
+#myBtn {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Fixed/sticky position */
+  bottom: 20px;
+  /* Place the button at the bottom of the page */
+  left: 30px;
+  /* Place the button 30px from the right */
+  z-index: 99;
+  /* Make sure it does not overlap */
+  border: none;
+  /* Remove borders */
+  outline: none;
+  /* Remove outline */
+  background-color: #337ab7;
+  /* Set a background color */
+  color: white;
+  /* Text color */
+  cursor: pointer;
+  /* Add a mouse pointer on hover */
+  padding: 15px;
+  /* Some padding */
+  border-radius: 10px;
+  /* Rounded corners */
+  font-size: 18px;
+  /* Increase font size */
+}
+
+#myBtn:hover {
+  background-color: #555;
+  /* Add a dark-grey background on hover */
+}
+
+.row.content {
+  height: 1500px
+}
+
+/* Set gray background color and 100% height */
+
+.sidenav {
+  background-color: #f1f1f1;
+  height: 100%;
+}
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+
+@media screen and (max-width: 767px) {
+  .sidenav {
+    height: auto;
+    padding: 15px;
+  }
+  .row.content {
+    height: auto;
+  }
+}
+
+#side {
+  padding-right: 0px;
+  padding-left: 0px
+}
+
+#panel-title {
+  border-radius: 0px;
+}
+
+#panel-main {
+  border: 0px;
+  border-radius: 0px;
+  background-color: #f1f1f1;
+  box-shadow: none;
+}
+
+#progr {
+  padding-left: 10px;
+  padding-right: 10;
+  /* display: none; */
+}
+
+#progr-msg {
+  padding-left: 10px;
+  padding-right: 10;
+  display: none;
+}
+
+#msgbox {
+  padding-left: 10px;
+  padding-right: 10;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 17px;
+  border-style: solid black 1px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ca2222;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 0px;
+  bottom: 0px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border: solid gray 1px;
+}
+
+input:checked+.slider {
+  background-color: #2ab934;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(28px);
+  -ms-transform: translateX(28px);
+  transform: translateX(28px);
+}
+
+/*------ ADDED CSS ---------*/
+
+.on {
+  display: none;
+}
+
+.on,
+.off {
+  color: white;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+}
+
+.on {
+  left: 32%
+}
+
+.off {
+  left: 65%
+}
+
+input:checked+.slider .on {
+  display: block;
+}
+
+input:checked+.slider .off {
+  display: none;
+}
+
+/*--------- END --------*/
+
+/* Rounded sliders */
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#progr,
+#msgbox {
+  display: none
+}
+
+#label-msg {
+  position: absolute;
+  margin-left: 10px;
+}
+
+#result-nav>* {
+  display: none;
+}
+
+body {
+  position: relative;
+}
+
+#section1 {
+  padding-top: 50px;
+  clear: both;
+  color: black;
+  background-color: white;
+}
+
+#section2 {
+  display: none;
+  padding-top: 50px;
+  color: black;
+  background-color: white;
+  /* color: white; */
+  /* background-color: gray; */
+  clear: both;
+}
+
+#section3 {
+  display: none;
+  padding-top: 50px;
+  height: 500px;
+  color: black;
+  background-color: white;
+}
+
+#section41 {
+  display: none;
+  padding-top: 50px;
+  height: 500px;
+  color: white;
+  background-color: gray;
+}
+
+#section42 {
+  display: none;
+  padding-top: 50px;
+  height: 500px;
+  color: white;
+  background-color: gray;
+}
+
+/* .prototype-ui {
+  display: none
+} */
+
+#table-maps {
+  display: none;
+}
+
+
+/****** Statistic ******/
+.statistic {
+  margin: 1em 0;
+  text-transform: uppercase;
+  display: inline-block;
+
+  .value {
+    font-size: 4em;
+    line-height: 1em;
+    text-align: center;
+
+    &.text {
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    img {
+      max-height: .8em;
+      vertical-align: baseline;
+    }
+  }
+
+  .label {
+    color: black  ;
+    display: block;
+    font-size: 1em;
+    text-align: center;
+  }
+}
+
+.statistic + .statistic {
+  margin-left: 1.5em;
+}
+
+/*** Horizontal Statistic ***/
+.statistic.horizontal {
+  .value,
+  .label {
+    display: inline;
+    vertical-align: middle;
+  }
+}
+
+/****** Statistic Group ******/
+.statistic-group {
+  margin: 1em 0;
+
+  .statistic {
+    display: inline-block;
+  }
+}
+
+/*** Horizontal Statistic Group ***/
+.statistic-group.horizontal {
+  .statistic {
+    display: block;
+
+    .value,
+    .label {
+      display: inline;
+      vertical-align: middle;
+    }
+  }
+  .statistic + .statistic {
+    margin-left: 0;
+  }
+}
+
+/*** Float Statistics ***/
+.statistic {
+  &.pull-left {
+    margin-right: 1em;
+  }
+  &.pull-right {
+    margin-left: 1em;
+  }
+}
+
+/****** Statistic Sizes ******/
+.statistic {
+  &.mini .value {
+    font-size: 1em;
+    font-weight: bold;
+  }
+  &.tiny .value {
+    font-size: 2em;
+  }
+  &.small .value {
+    font-size: 3em !important;
+  }
+  &.large .value {
+    font-size: 5em;
+  }
+  &.huge .value {
+    font-size: 6em;
+  }
+}
+
+/****** Statistic Types ******/
+.statistic {
+  &.primary {
+    color: @brand-primary;
+  }
+
+  &.success {
+    color: @brand-success;
+  }
+
+  &.info {
+    color: @brand-info;
+  }
+
+  &.warning {
+    color: @brand-warning;
+  }
+
+  &.danger {
+    color: @brand-danger;
+  }
+
+  &.inverted {
+    color: white;
+  }
+
+}
+
+/****** Bootstrap Colors ******/
+
+@gray-base: #000;
+@gray-darker: lighten(@gray-base, 13.5%);
+@gray-dark: lighten(@gray-base, 20%);
+@gray: lighten(@gray-base, 33.5%);
+@gray-light: lighten(@gray-base, 46.7%);
+@gray-lighter: lighten(@gray-base, 93.5%);
+@brand-primary: darken(#428bca, 6.5%);
+@brand-success: #5cb85c;
+@brand-info: #5bc0de;
+@brand-warning: #f0ad4e;
+@brand-danger: #d9534f;
+
+/****** Bootstrap Typography ******/
+@font-size-base: 14px;
+@font-size-large: ceil((@font-size-base * 1.25));
+@font-size-small: ceil((@font-size-base * 0.85));
+@font-size-h1: floor((@font-size-base * 2.6));
+@font-size-h2: floor((@font-size-base * 2.15));
+@font-size-h3: ceil((@font-size-base * 1.7));
+@font-size-h4: ceil((@font-size-base * 1.25));
+@font-size-h5: @font-size-base;
+@font-size-h6: ceil((@font-size-base * 0.85));
+
+/****** Footer ******/
+
+.footer {
+  background-color: @gray-lighter;
+}
+.footer p {
+  margin: 20px 0;
+  text-align: center;
+  color: darken(@gray-lighter, 40%);
+}
+.footer .glyphicon-heart {
+  color: pink;
+}
+
+/*** Sticky Footer ***/
+
+@footer-height: 60px;
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: @footer-height;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: @footer-height;
+}
