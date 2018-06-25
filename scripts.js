@@ -472,6 +472,8 @@ $(document).ready(function() {
   $.get('data/all_maps.csv', function(data) {
     all_maps = processData(data);
     createMapTable(all_maps[0], all_maps[2]);
+    $('#show-term-maps-btn').show();
+    $('#table-maps').show();
   }, 'text');
 
 
