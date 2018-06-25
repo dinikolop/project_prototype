@@ -467,7 +467,12 @@ $(document).ready(function() {
 
     reader.readAsText(f);
   }
-  document.getElementById('file').addEventListener('change', handleFileSelect, false);
+  // document.getElementById('file').addEventListener('change', handleFileSelect, false);
+
+  $.get('data/all_maps.csv', function(data) {
+    all_maps = processData(data);
+    createMapTable(all_maps[0], all_maps[2]);
+  }, 'text');
 
 
   $('#togBtn').on('change', function() {
