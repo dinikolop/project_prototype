@@ -4,6 +4,7 @@ var all_maps;
 //https://cors-anywhere.herokuapp.com/
 
 var results = {}
+var icd10scores = {};
 var iter = 0
 var loopCheckboxes = function(cb, df) {
   var maxcb = cb.length;
@@ -19,12 +20,12 @@ var loopCheckboxes = function(cb, df) {
 
 function meshCategories() {
   var categories = $('input[name^=meshcat]:checked');
-  if(categories.length == 0){
+  if (categories.length == 0) {
     return "";
   }
   var ret = '(' + categories[0].value + ')';
-  for(var i=1; i<categories.length; i++) {
-    ret = '(' + ret + ' OR ' +  categories[i].value + ')';
+  for (var i = 1; i < categories.length; i++) {
+    ret = '(' + ret + ' OR ' + categories[i].value + ')';
   }
   return ret;
 }
@@ -184,6 +185,10 @@ function displayResults(articles, name, maxcb) {
     }
     $('#section2').show();
     $('#show-pmid-per-inst').show();
+    // Show institution Scores
+    createPublicationScores(results);
+    $('#section3').css('display', 'inline-block');
+    $('#show-pub-scores').show();
   }
 }
 
@@ -202,8 +207,148 @@ function format(name, data) {
   return div
 }
 
+function createPublicationScores(results) {
+  var insti_num = Object.keys(results).length;
+  var ths = '<th>ICD10 Code</th><th>ICD10 Name</th><th>n</th><th>Mean</th><th>Mean + 2SD</th>';
+
+  for (var key in results) {
+    ths += '<th>' + key + '</th>';
+
+    //Get icd10 Scores
+    data = results[key];
+    for (var i = 0; i < data.length; i++) {
+      var singlePMIDdict = data[i];
+      var allmesh = singlePMIDdict['mesh'];
+      var supplMesh = singlePMIDdict['supplMesh'];
+
+      // Main Subject Headings mapping
+      for (var j = 0; j < allmesh.length; j++) {
+        var mesh = allmesh[j]["ui"];
+        var icd10s = all_maps[0][mesh];
+        if (icd10s) {
+          for (code in icd10s) {
+            var icd10name = all_maps[3][code]
+            if (!icd10scores[code]) {
+              icd10scores[code] = {};
+            }
+            if (!icd10scores[code][key]) {
+              icd10scores[code][key] = 0;
+            }
+            icd10scores[code][key] += 1;
+          }
+        }
+      }
+
+      //Supplementary MeSH mappings
+      // for (var k=0; k<supplMesh.length; k++) {
+      //   var mesh = allmesh[k]['ui'];
+      //   var icd10s = all_maps[0][mesh];
+      //   if (icd10s) {
+      //     for (code in icd10s) {
+      //       console.log(key, mesh, code, data[i])
+      //       var icd10name = all_maps[3][code]
+      //       if (!icd10scores[code]) {
+      //         icd10scores[code] = {};
+      //       }
+      //       if (!icd10scores[code][key]) {
+      //         icd10scores[code][key] = 0;
+      //       }
+      //       icd10scores[code][key] += 1;
+      //     }
+      //   }
+      // }
+
+    }
+  }
+
+  rows = [];
+  var institutions = Object.keys(results);
+  for (var code in icd10scores) {
+    var icd10name = all_maps[3][code]
+    var row = {
+      "ICD10 Code": code,
+      "ICD10 Name": icd10name,
+      "n": n
+    }
+
+    var n = 0;
+    var scores = {};
+    var x = [];
+    for (var i = 0; i < institutions.length; i++) {
+      var inst = institutions[i];
+      var freq = 0;
+      if (icd10scores[code][inst]) {
+        freq = icd10scores[code][inst];
+      }
+      scores[inst] = freq;
+      n += freq;
+      x.push(freq);
+    }
+
+    var mean = n / institutions.length;
+    var sum = 0;
+    for (var u = 0; u < x.length; u++) {
+      sum += (x[u] - mean) * (x[u] - mean);
+    }
+    var variance = sum / x.length;
+    row['n'] = n;
+    row['mean'] = parseFloat(mean.toFixed(4));
+    row['m2sd'] = mean + 2 * (Math.sqrt(variance));
+    row['m2sd'] = parseFloat(row['m2sd'].toFixed(4));
+    row = Object.assign({}, row, scores);
+    rows.push(row);
+  }
+
+  var id = 'PubScores';
+  var table_id = "PubScore-table";
+  var toAppend = '<div id="' + id + '" class="container-fluid" style="width=100%">' +
+    '<table id="' + table_id + '" class="table table-striped table-responsive table-bordered" style="width=100%">' +
+    '<thead><tr>' +
+    ths +
+    '</tr></thead>' +
+    '<tbody></tbody>' +
+    '</table>' +
+    '</div><hr>'
+  $('#section3').append(toAppend);
+
+  var cols = [{
+      data: "ICD10 Code"
+    },
+    {
+      data: "ICD10 Name"
+    },
+    {
+      data: "n"
+    },
+    {
+      data: "mean"
+    },
+    {
+      data: "m2sd"
+    },
+  ];
+  for (var i = 0; i < institutions.length; i++) {
+    var inst = {
+      data: institutions[i]
+    };
+    cols.push(inst);
+
+  }
+  $(document).ready(function() {
+    $('#' + table_id).DataTable({
+      data: rows,
+      columns: cols,
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+    });
+  });
+
+  $('#' + table_id).css("width", "100%")
+}
+
 function createPMIDtable(institution, data, i) {
-  console.log(institution)
   var sec = 'Section2' + i;
   var secTable = sec + '-table';
   var secTableBody = secTable + '-body';
@@ -307,7 +452,7 @@ function createPMIDtable(institution, data, i) {
 
     rows.push(row);
   }
-  console.log(rows)
+
   var oTable = $('#' + secTable).DataTable({
     "data": rows,
     "columns": [{
@@ -318,7 +463,7 @@ function createPMIDtable(institution, data, i) {
       },
       {
         data: "pmid",
-        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+        "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
           $(nTd).html('<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + oData.pmid + '" target="_blank">' + oData.pmid + '</a>');
         }
       },
@@ -353,15 +498,13 @@ function createPMIDtable(institution, data, i) {
       }
       var name = secTable + '-' + tr.index() + 'row';
       row.child(format(name, detailsRowData)).show();
-      console.log(this.children[0])
-      console.log(this.children[0].src)
       this.children[0].src = "http://i.imgur.com/d4ICC.png";
       row.child().find('#' + name).addClass("table table-striped table-responsive table-bordered")
       row.child().find('#' + name).DataTable({
         "data": detailsRowData,
         "columns": [{
             data: "mesh code",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+            "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
               $(nTd).html('<a href="https://meshb.nlm.nih.gov/record/ui?ui=' + oData['mesh code'] + '" target="_blank">' + oData['mesh code'] + '</a>');
             }
           },
@@ -442,31 +585,31 @@ function processData(allText) {
 $(document).ready(function() {
 
 
-  function handleFileSelect(evt) {
-    var file = evt.target.files;
-    var output = [];
-    f = file[0];
-
-    if (f.name != 'all_maps.csv') {
-      alert("Please upload 'all_maps.csv' file.")
-      return
-    }
-
-    var reader = new FileReader();
-    reader.onload = (function(theFile) {
-      return function(e) {
-        var result = e.target.result;
-        all_maps = processData(result);
-        createMapTable(all_maps[0], all_maps[2]);
-        $('.file-uploader').hide();
-        $('#show-term-maps-btn').show();
-        $('#table-maps').show();
-        $('.prototype-ui').show();
-      };
-    })(f);
-
-    reader.readAsText(f);
-  }
+  // function handleFileSelect(evt) {
+  //   var file = evt.target.files;
+  //   var output = [];
+  //   f = file[0];
+  //
+  //   if (f.name != 'all_maps.csv') {
+  //     alert("Please upload 'all_maps.csv' file.")
+  //     return
+  //   }
+  //
+  //   var reader = new FileReader();
+  //   reader.onload = (function(theFile) {
+  //     return function(e) {
+  //       var result = e.target.result;
+  //       all_maps = processData(result);
+  //       createMapTable(all_maps[0], all_maps[2]);
+  //       $('.file-uploader').hide();
+  //       $('#show-term-maps-btn').show();
+  //       $('#table-maps').show();
+  //       $('.prototype-ui').show();
+  //     };
+  //   })(f);
+  //
+  //   reader.readAsText(f);
+  // }
   // document.getElementById('file').addEventListener('change', handleFileSelect, false);
 
   $.get('data/all_maps.csv', function(data) {

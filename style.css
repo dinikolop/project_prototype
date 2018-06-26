@@ -226,6 +226,7 @@ body {
   height: 500px;
   color: black;
   background-color: white;
+  clear: both;
 }
 
 #section41 {
@@ -243,10 +244,6 @@ body {
   color: white;
   background-color: gray;
 }
-
-/* .prototype-ui {
-  display: none
-} */
 
 #table-maps {
   display: none;
