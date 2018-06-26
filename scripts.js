@@ -341,7 +341,8 @@ function createPublicationScores(results) {
       dom: 'Bfrtip',
       buttons: [
         'copy', 'csv', 'excel', 'pdf', 'print'
-      ]
+      ],
+      "scrollX": true
     });
   });
 
@@ -454,6 +455,10 @@ function createPMIDtable(institution, data, i) {
   }
 
   var oTable = $('#' + secTable).DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
     "data": rows,
     "columns": [{
         className: 'details-control',
@@ -501,6 +506,10 @@ function createPMIDtable(institution, data, i) {
       this.children[0].src = "http://i.imgur.com/d4ICC.png";
       row.child().find('#' + name).addClass("table table-striped table-responsive table-bordered")
       row.child().find('#' + name).DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
         "data": detailsRowData,
         "columns": [{
             data: "mesh code",
@@ -544,7 +553,12 @@ function createMapTable(maps, names) {
       $('#table-maps-body').append(toAppend);
     }
   }
-  $('#table-maps').DataTable();
+  $('#table-maps').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+  });
 }
 
 function processData(allText) {
