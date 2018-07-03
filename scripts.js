@@ -1,3 +1,5 @@
+var pubmedkey = config.pubmedkey;
+
 var progressVal = 0;
 var parts = 0;
 var all_maps;
