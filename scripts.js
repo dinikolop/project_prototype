@@ -75,7 +75,7 @@ function searchPubMed(term, name) {
   return $.ajax({
     url: 'https://cors-anywhere.herokuapp.com/http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
     data: {
-      api_key: pubmedkey,
+      //api_key: pubmedkey,
       db: 'pubmed',
       dataType: 'json',
       usehistory: 'y',
@@ -95,7 +95,7 @@ function fetchResults(response, name) {
   return $.ajax({
     url: 'https://cors-anywhere.herokuapp.com/http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi',
     data: {
-      api_key: pubmedkey,
+      //api_key: pubmedkey,
       db: 'pubmed',
       usehistory: 'y',
       webenv: response.esearchresult.webenv,
