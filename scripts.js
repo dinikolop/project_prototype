@@ -1,4 +1,5 @@
 //var pubmedkey = config.pubmedkey;
+var pubmedkey = ""
 
 var progressVal = 0;
 var parts = 0;
