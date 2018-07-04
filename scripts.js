@@ -336,19 +336,21 @@ function createPublicationScores(results) {
     cols.push(inst);
 
   }
-  $(document).ready(function() {
-    $('#' + table_id).DataTable({
-      data: rows,
-      columns: cols,
-      dom: 'Bfrtip',
-      buttons: [
-        'copy', 'csv', 'excel', 'pdf', 'print'
-      ],
-      "scrollX": true
-    });
+   var sTable = $('#' + table_id).DataTable({
+    data: rows,
+    columns: cols,
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+    "scrollX": true
   });
 
   $('#' + table_id).css("width", "100%")
+
+  $('#' + table_id).on('click', 'tbody td', function() {
+
+  })
 }
 
 function createPMIDtable(institution, data, i) {
