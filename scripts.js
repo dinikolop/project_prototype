@@ -4,6 +4,7 @@ var pubmedkey = ""
 var progressVal = 0;
 var parts = 0;
 var all_maps;
+var already_click = false;
 //https://cors-anywhere.herokuapp.com/
 
 var results = {}
@@ -662,6 +663,29 @@ $(document).ready(function() {
   /// Submit Button
   $('#submit-button').click(function(e) {
     e.preventDefault();
+
+    if(already_click == true) {
+      // Progress bar reset
+      $('.progress-bar').attr("aria-valuenow", "0");
+      $('.progress-bar').attr("style", "width:0%");
+      $('.progress-bar').text("0");
+      $('#msg-log').text('');
+      progressVal = 0;
+      parts = 0;
+
+      //
+      $('#section2').html("<h1>PMIDs per Institution</h1>")
+      $('#section3').html("<h1>Publication Scores</h1>")
+      $('#section2').attr('display', 'none')
+      $('#section3').attr('display', 'none')
+
+
+      $('#result-nav').attr('display', 'none');
+      $('#show-pmid-per-inst').html('PMIDs per Institution <span class="caret"></span></a></a><ul class="dropdown-menu" id="dd-pmids"></ul>')
+      $('#show-pub-scores').html('<a href="#section3">Publication Scores</a>');
+    }
+    already_click=true;
+
     $('.warn').remove()
     var checkboxes = $('input[name^=institution]:checked')
     var start = $('input[name=start]')
