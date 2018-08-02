@@ -677,13 +677,15 @@ $(document).ready(function() {
       //
       $('#section2').html("<h1>PMIDs per Institution</h1>")
       $('#section3').html("<h1>Publication Scores</h1>")
-      $('#section2').attr('display', 'none')
-      $('#section3').attr('display', 'none')
+      $('#section2').css('display', 'none')
+      $('#section3').css('display', 'none')
 
 
-      $('#result-nav').attr('display', 'none');
-      $('#show-pmid-per-inst').html('PMIDs per Institution <span class="caret"></span></a></a><ul class="dropdown-menu" id="dd-pmids"></ul>')
+
+      $('#show-pmid-per-inst').html('<a class="dropdown-toggle" data-toggle="dropdown" href="#">PMIDs per Institution <span class="caret"></span></a></a><ul class="dropdown-menu" id="dd-pmids"></ul>')
       $('#show-pub-scores').html('<a href="#section3">Publication Scores</a>');
+      $('#show-pmid-per-inst').css('display', 'none');
+      $('#show-pub-scores').css('display', 'none');
     }
     already_click=true;
 
