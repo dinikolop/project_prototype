@@ -259,6 +259,7 @@ function createPublicationScores(results) {
             }
             if (!icd10scores[code][key]) {
               icd10scores[code][key] = 0;
+              icd10scores[code][key+'-pubs'] = [];
             }
             icd10scores[code][key] += 1;
           }
