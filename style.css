@@ -226,6 +226,14 @@ body {
   clear: both;
 }
 
+#section4 {
+  display: none;
+  padding-top: 50px;
+  color: black;
+  background-color: white;
+  clear: both;
+}
+
 #section41 {
   display: none;
   padding-top: 50px;

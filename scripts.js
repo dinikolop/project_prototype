@@ -129,6 +129,7 @@ function parseResults(response, name) {
       title: titleNode ? titleNode.textContent : null,
       doi: doiNode ? doiNode.textContent : null,
       url: doiNode ? 'http://dx.doi.org/' + encodeURIComponent(doiNode.textContent) : 'http://pubmed.gov/' + pmidNode.textContent,
+      pubdate: pubdateNode ? pubdateNode.textContent : null,
       abstract: abstractNode ? abstractNode.textContent : null,
       mesh: meshNodes ? $.map(meshNodes, function(meshNode) {
         var descriptorNode = meshNode.querySelector('DescriptorName');
@@ -193,6 +194,9 @@ function displayResults(articles, name, maxcb) {
     createPublicationScores(results);
     $('#section3').show();
     $('#show-pub-scores').show();
+    createAllInfoTable(results);
+    $('#section4').show();
+    $('#show-alldata').show();
   }
 }
 
@@ -209,6 +213,100 @@ function format(name, data) {
     '<tbody></tbody>' +
     '</table></div>');
   return div
+}
+
+function createAllInfoTable(results){
+  var rows = [];
+  var insti_num = Object.keys(results).length;
+  var ths = '<th>Institution</th><th>PMID</th><th>MeSH</th><th>ICD10 Code(s)</th><th>Pub Date</th>';
+  for (var key in results) {
+    var data = results[key];
+    for (var i=0; i<data.length; i++){
+      var pmid = data[i]['pmid'];
+      var pubdate = data[i]['pubdate'].split(' ').join('').split('\n').join(' ').trim();
+      var singlePMIDdict = data[i];
+      var allmesh = singlePMIDdict['mesh'];
+      var supplMesh = singlePMIDdict['supplMesh'];
+      for (var j = 0; j < allmesh.length; j++) {
+        var mesh = allmesh[j]["ui"];
+        var icd10s = all_maps[0][mesh];
+        var row = {
+          "Institution": key,
+          "PMID": pmid,
+          "MeSH": mesh,
+          "Pub Date": pubdate,
+          "ICD10 Code(s)": ""
+        }
+        if (icd10s) {
+          var l = []
+          for (code in icd10s) {
+            l.push(code);
+          }
+          row['ICD10 Code(s)'] = l;
+        }
+        rows.push(row);
+      }
+      for (var j = 0; j < supplMesh.length; j++) {
+        var mesh = supplMesh[j]["s_ui"];
+        var icd10s = all_maps[0][mesh];
+        var row = {
+          "Institution": key,
+          "PMID": pmid,
+          "MeSH": mesh,
+          "Pub Date": pubdate,
+          "ICD10 Code(s)": ""
+        }
+        if (icd10s) {
+          var l = []
+          for (code in icd10s) {
+            l.push(code);
+          }
+          row['ICD10 Code(s)'] = l;
+        }
+        rows.push(row);
+      }
+    }
+
+
+  }
+
+  var id = 'AllInfo';
+  var table_id = "AllInfo-table";
+  var toAppend = '<div id="' + id + '" class="container-fluid" style="width=100%">' +
+    '<table id="' + table_id + '" class="table table-striped table-responsive table-bordered" style="width=100%">' +
+    '<thead><tr>' +
+    ths +
+    '</tr></thead>' +
+    '<tbody></tbody>' +
+    '</table>' +
+    '</div><hr>'
+  $('#section4').append(toAppend);
+
+  var cols = [{
+      data: "Institution"
+    },
+    {
+      data: "PMID"
+    },
+    {
+      data: "MeSH"
+    },
+    {
+      data: "ICD10 Code(s)"
+    },
+    {
+      data: "Pub Date"
+    },
+  ];
+   var sTable = $('#' + table_id).DataTable({
+    data: rows,
+    columns: cols,
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+    ]
+  });
+  $('#' + table_id).css("width", "100%")
 }
 
 function createPublicationScores(results) {
@@ -677,15 +775,19 @@ $(document).ready(function() {
       //
       $('#section2').html("<h1>PMIDs per Institution</h1>")
       $('#section3').html("<h1>Publication Scores</h1>")
+      $('#section4').html("<h1>Complete data</h1>")
       $('#section2').css('display', 'none')
       $('#section3').css('display', 'none')
+      $('#section4').css('display', 'none')
 
 
 
       $('#show-pmid-per-inst').html('<a class="dropdown-toggle" data-toggle="dropdown" href="#">PMIDs per Institution <span class="caret"></span></a></a><ul class="dropdown-menu" id="dd-pmids"></ul>')
       $('#show-pub-scores').html('<a href="#section3">Publication Scores</a>');
+      $('#show-alldata').html('<a href="#section4">Complete Data</a>');
       $('#show-pmid-per-inst').css('display', 'none');
       $('#show-pub-scores').css('display', 'none');
+      $('#show-alldata').css('display', 'none');
     }
     already_click=true;
 
